@@ -12,6 +12,10 @@ promise or returns one the scheduler logic will be bound to it.
 > Note: When running on the browser you'll need a `Promise` shim
   or assign an ES6 Promise implementation to `TaskTicker.Promise`.
 
+> Note: **TaskTicker** uses times in seconds (using floats) not
+  milliseconds. This will probably change in the future but I
+  wanted to experiment with it.
+
 
 ## Usage
 
@@ -62,7 +66,7 @@ of your asynchronous operations.
 
     The MIT License
 
-    Copyright (c) 2012 Iván -DrSlump- Montes
+    Copyright (c) 2014 Iván -DrSlump- Montes
 
     Permission is hereby granted, free of charge, to any person obtaining
     a copy of this software and associated documentation files (the
