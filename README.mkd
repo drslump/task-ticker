@@ -1,7 +1,7 @@
 # TaskTicker
 
-Allows to queue tasks to be executed at a given interval, it can be
-used as a throttling mechanism, also supporting to retry failed
+Allows to queue tasks to be executed at a given interval, it can
+be used as a throttling mechanism, also supporting to retry failed
 tasks with a configurable backoff algorithm.
 
 Each queued task returns a *promise* to trigger some additional
@@ -9,8 +9,8 @@ logic or listen for timeout errors. If the queued element is a
 promise or returns one the scheduler logic will be bound to it.
 
 
-> Note: When running on the browser you'll an `Promise` shim or
-  assign an ES6 Promise implementation to `TaskTicker.Promise`.
+> Note: When running on the browser you'll need a `Promise` shim
+  or assign an ES6 Promise implementation to `TaskTicker.Promise`.
 
 
 ## Usage
