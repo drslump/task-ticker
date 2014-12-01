@@ -1,0 +1,84 @@
+# TaskTicker
+
+Allows to queue tasks to be executed at a given interval, it can be
+used as a throttling mechanism, also supporting to retry failed
+tasks with a configurable backoff algorithm.
+
+Each queued task returns a *promise* to trigger some additional
+logic or listen for timeout errors. If the queued element is a
+promise or returns one the scheduler logic will be bound to it.
+
+
+> Note: When running on the browser you'll an `Promise` shim or
+  assign an ES6 Promise implementation to `TaskTicker.Promise`.
+
+
+## Usage
+
+```js
+    var ticker = TaskTicker(0.100)
+    ticker.queue('foo')
+    .then(function (data) { assert(data === 'foo') });
+    ticker.queue(function (elapsed) {
+        return 'processed after ' + elapsed + 'ms';
+    })
+
+    ticker.queue(function () {
+        return getPromise('/path/to/resource');
+    }).then(function (data) {
+        console.log(data);
+    }).catch(function (error) {
+        if (error instanceof TaskTicker.Error)
+            console.log('The task has timed out or was canceled!');
+    });
+```
+
+The constructor also allows to pass an options argument to further
+configure the behaviour:
+
+    interval: Number -- Seconds to pass between tasks
+    timeout: Number  -- Maximum number of seconds to wait for the task to
+                        be executed, including retries, if the time is
+                        reached the promise is rejected with TaskTicker.Error
+    retries: Number  -- Maximum number of retries for the execution of the
+                        task before it's rejected with the generated error.
+    backoff: Number  -- Base to calculate the exponential backoff between
+             Function   retries or a function receiving the current retry
+                        number as argument and returning the backoff delay
+                        in seconds.
+
+When queuing tasks with the `.queue` method, we can either provide a
+function to be executed or simply some data value to be returned. In any
+case the method will return a promise that will either be fulfilled or
+rejected.
+
+> Note that the ticker understands promises, so if your tasks generates
+one it'll automatically wire its logic into your promise, meaning that
+flow control with retries or timeout are also in effect for the duration
+of your asynchronous operations.
+
+
+## License
+
+    The MIT License
+
+    Copyright (c) 2012 Iván -DrSlump- Montes
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    'Software'), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

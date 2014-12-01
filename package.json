@@ -1,0 +1,37 @@
+{
+  "name": "task-ticker",
+  "description": "Task ticker based on Promises with support for retries and timeouts.",
+  "version": "1.0.0",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://en.wikipedia.org/wiki/MIT_License"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Iván -DrSlump- Montes",
+      "web": "http://pollinimini.net/",
+      "email": "drslump@pollinimini.net"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/drslump/task-ticker"
+  },
+  "dependencies": {
+    "promise-es6": "^0.1.0"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "jasmine-node": "^1.14.5",
+    "mocha": "^2.0.1",
+    "sinon": "^1.12.1"
+  },
+  "directories": {
+    "src": "src"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha ./tests"
+  }
+}
