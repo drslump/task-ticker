@@ -1,11 +1,5 @@
 (function (exports) {
 
-    // Support node env
-    if (typeof require === 'function') {
-        var Promise = require('promise-es6').Promise;
-    }
-
-
     function onValue (ticker, task, value) {
         if (task.fulfilled) return;
 
@@ -167,7 +161,12 @@
     TaskTicker.EXPIRED_ERROR = new TaskTicker.Error('Timeout');
     TaskTicker.RESET_ERROR = new TaskTicker.Error('Reset');
 
-    TaskTicker.Promise = typeof Promise !== undefined ? Promise : null;
+    TaskTicker.Promise = typeof Promise !== 'undefined' ? Promise : null;
+
+    // Support node env
+    if (!TaskTicker.Promise && typeof require === 'function') {
+        TaskTicker.Promise = require('promise-es6').Promise;
+    }
 
 
     exports.TaskTicker = TaskTicker;
