@@ -18,8 +18,8 @@
             task.reject(error);
         } else {
             task.retry++;
-            setTimeout(
-                push.bind(null, ticker, task),
+            (TaskTicker.delayFn || setTimeout)(
+                push.bind(null, ticker, task, false),
                 ticker.backoff(task.retry) * 1000
             );
         }
@@ -64,7 +64,7 @@
             min = ticker.interval * 1000;
 
         if (diff < min) {
-            setTimeout(
+            (TaskTicker.delayFn || setTimeout)(
                 tick.bind(null, ticker),
                 min - diff
             );
@@ -162,6 +162,8 @@
     TaskTicker.RESET_ERROR = new TaskTicker.Error('Reset');
 
     TaskTicker.Promise = typeof Promise !== 'undefined' ? Promise : null;
+
+    TaskTicker.delayFn = null;
 
     // Support node env
     if (!TaskTicker.Promise && typeof require === 'function') {
