@@ -6,7 +6,7 @@ describe('TaskTicker', function () {
     this.timeout(5000);
 
 
-    var TaskTicker = require('../src').TaskTicker;
+    var TaskTicker = require('../').TaskTicker;
 
     var Promise = require('promise-es6').Promise;
 
