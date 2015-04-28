@@ -13,12 +13,18 @@ describe('TaskTicker', function () {
 
     var clock, spy;
     beforeEach(function () {
-        clock = sinon.useFakeTimers(3600000);
+        clock = sinon.useFakeTimers(Date.now());
+        // Override the TaskTicker timer with the Sinon mocked ones
+        sinon.stub(TaskTicker, 'setTimeout', setTimeout);
+        sinon.stub(TaskTicker, 'clearTimeout', clearTimeout);
+
         spy = sinon.spy();
     });
 
     afterEach(function () {
         clock.restore();
+        TaskTicker.setTimeout.restore();
+        TaskTicker.clearTimeout.restore();
     });
 
     describe('Simple', function () {

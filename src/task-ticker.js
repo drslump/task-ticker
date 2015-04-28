@@ -4,7 +4,8 @@
         if (task.fulfilled) return;
 
         task.fulfilled = true;
-        task.timeout && clearTimeout(task.timeout);
+        task.timeout && TaskTicker.clearTimeout(task.timeout);
+        task.timeout = null;
         task.resolve(value);
         return value;
     }
@@ -14,11 +15,12 @@
 
         if (task.retry >= ticker.retries) {
             task.fulfilled = true;
-            task.timeout && clearTimeout(task.timeout);
+            task.timeout && TaskTicker.clearTimeout(task.timeout);
+            task.timeout = null;
             task.reject(error);
         } else {
             task.retry++;
-            (TaskTicker.delayFn || setTimeout)(
+            TaskTicker.setTimeout(
                 push.bind(null, ticker, task, false),
                 ticker.backoff(task.retry) * 1000
             );
@@ -64,7 +66,7 @@
             min = ticker.interval * 1000;
 
         if (diff < min) {
-            (TaskTicker.delayFn || setTimeout)(
+            TaskTicker.setTimeout(
                 tick.bind(null, ticker),
                 min - diff
             );
@@ -80,7 +82,7 @@
 
     function timeout (ticker, task) {
         if (!ticker.timeout) return;
-        task.timeout = setTimeout(function () {
+        task.timeout = TaskTicker.setTimeout(function () {
             var idx = ticker.tasks.indexOf(task);
             if (-1 !== idx) {
                 ticker.tasks.splice(idx, 1);
@@ -90,15 +92,15 @@
     }
 
 
-    function TaskTicker (int_or_opts) {
+    function TaskTicker (interval_or_opts) {
 
         if (!(this instanceof TaskTicker)) {
-            return new TaskTicker(int_or_opts);
+            return new TaskTicker(interval_or_opts);
         }
 
-        var opts = typeof int_or_opts !== 'object'
-                 ? { interval: int_or_opts }
-                 : int_or_opts;
+        var opts = typeof interval_or_opts !== 'object'
+                 ? { interval: interval_or_opts }
+                 : interval_or_opts;
 
         this.paused = 0;
         this.interval = opts.interval === 0 ? 0 : opts.interval || 0.016;
@@ -163,10 +165,12 @@
 
     TaskTicker.Promise = typeof Promise !== 'undefined' ? Promise : null;
 
-    TaskTicker.delayFn = null;
+    // Allow global override for the timing function
+    TaskTicker.setTimeout = setTimeout;
+    TaskTicker.clearTimeout = clearTimeout;
 
-    // Support node env
-    if (!TaskTicker.Promise && typeof require === 'function') {
+    // Support node env (avoid native Promise impl. on Node 0.12)
+    if (typeof exports !== 'undefined' && this.exports !== exports) {
         TaskTicker.Promise = require('promise-es6').Promise;
     }
 
